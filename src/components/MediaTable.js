@@ -4,6 +4,8 @@ import {useAllMedia} from '../hooks/ApiHooks';
 const MediaTable = () => {
   const picArray = useAllMedia();
 
+  console.log('MediaTable', picArray);
+
   return (
     <table>
       <tbody>

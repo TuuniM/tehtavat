@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import {uploadsUrl} from '../utils/variables';
+import {Link} from 'react-router-dom';
 
 const MediaRow = ({file}) => {
   return (
@@ -12,7 +13,7 @@ const MediaRow = ({file}) => {
         <p>{file.description}</p>
       </td>
       <td>
-        <a href={uploadsUrl + file.filename}>View</a>
+        <Link to={'/single/' + file.file_id}>View</Link>
       </td>
     </tr>
   );
