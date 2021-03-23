@@ -6,12 +6,12 @@ import Single from './views/Single';
 
 const App = () => {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <Nav />
       <Switch>
         <Route path="/" exact component={Home}/>
         <Route path="/profile" component={Profile}/>
-        <Route path="/single/:id" component={Single}/>
+        <Route path="/single" component={Single}/>
       </Switch>
     </Router>
   );

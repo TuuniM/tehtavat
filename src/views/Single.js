@@ -1,13 +1,8 @@
 import {uploadsUrl} from '../utils/variables';
-import {useParams} from 'react-router-dom';
-import {useSingleMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 
 const Single = ({location}) => {
-  console.log('match', location);
-  const {id} = useParams();
-  // const file = props.location.state;
-  const file = useSingleMedia(id);
+  const file = location.state;
 
   return (
     <>
