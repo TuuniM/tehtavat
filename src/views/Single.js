@@ -1,11 +1,13 @@
 import {uploadsUrl} from '../utils/variables';
 import {useParams} from 'react-router-dom';
+import {useSingleMedia} from '../hooks/ApiHooks';
+import PropTypes from 'prop-types';
 
-const Single = () => {
-  console.log('match', useParams());
-  // eslint-disable-next-line no-unused-vars
+const Single = ({location}) => {
+  console.log('match', location);
   const {id} = useParams();
-  const file = {}; // TODO: fetch single media based on id from path parameter
+  // const file = props.location.state;
+  const file = useSingleMedia(id);
 
   return (
     <>
@@ -13,6 +15,10 @@ const Single = () => {
       <img src={uploadsUrl + file.filename} alt={file.title}/>
     </>
   );
+};
+
+Single.propTypes = {
+  location: PropTypes.object,
 };
 
 export default Single;

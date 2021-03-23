@@ -13,7 +13,9 @@ const MediaRow = ({file}) => {
         <p>{file.description}</p>
       </td>
       <td>
-        <Link to={'/single/' + file.file_id}>View</Link>
+        <Link
+          to={{pathname: '/single/' + file.file_id, state: file}}
+        >View</Link>
       </td>
     </tr>
   );

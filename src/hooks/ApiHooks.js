@@ -23,4 +23,18 @@ const useAllMedia = () => {
   return picArray;
 };
 
-export {useAllMedia};
+const useSingleMedia = (id) => {
+  const [data, setData] = useState([]);
+  useEffect(()=>{
+    const loadMedia = async () => {
+      const response = await fetch(baseUrl + 'media/' + id);
+      const file = await response.json();
+      setData(file);
+    };
+
+    loadMedia();
+  }, []);
+  return data;
+};
+
+export {useAllMedia, useSingleMedia};
