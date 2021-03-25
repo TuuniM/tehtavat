@@ -3,7 +3,7 @@ import Nav from './components/Nav';
 import Home from './views/Home';
 import Profile from './views/Profile';
 import Single from './views/Single';
-import Login from './components/RegisterForm';
+import Login from './views/Login';
 
 const App = () => {
   return (
@@ -11,7 +11,7 @@ const App = () => {
       <Nav />
       <Switch>
         <Route path="/" exact component={Login}/>
-        <Route path="/home" exact component={Home}/>
+        <Route path="/home" component={Home}/>
         <Route path="/profile" component={Profile}/>
         <Route path="/single" component={Single}/>
       </Switch>
