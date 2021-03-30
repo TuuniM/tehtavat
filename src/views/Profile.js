@@ -7,9 +7,13 @@ const Profile = () => {
   return (
     <>
       <h1>Profile</h1>
-      <p>{user.full_name}</p>
-      <p>{user.email}</p>
-      <p>{user.username}</p>
+      {user &&
+      <div>
+        <p>{user.full_name}</p>
+        <p>{user.email}</p>
+        <p>{user.username}</p>
+      </div>
+      }
     </>
   );
 };
