@@ -1,5 +1,8 @@
+import {useContext} from 'react';
+import {MediaContext} from '../contexts/MediaContext';
+
 const Profile = () => {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [user] = useContext(MediaContext);
 
   return (
     <>

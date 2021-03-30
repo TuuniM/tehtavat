@@ -1,18 +1,20 @@
 import {Link} from 'react-router-dom';
-import {useEffect} from 'react';
+import {useEffect, useContext} from 'react';
 import {useUsers} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import {withRouter} from 'react-router-dom';
+import {MediaContext} from '../contexts/MediaContext';
 
 const Nav = ({history}) => {
+  const [user, setUser] = useContext(MediaContext);
   const {getUser} = useUsers();
 
   useEffect(() => {
     const checkUser = async () => {
       try {
         const token = localStorage.getItem('token');
-        const user = await getUser(token);
-        console.log(user);
+        const userData = await getUser(token);
+        setUser(userData);
       } catch (e) {
         // send to login
         history.push('/');
@@ -24,9 +26,10 @@ const Nav = ({history}) => {
 
   return (
     <nav>
+      {user &&
       <ul>
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/home">Home</Link>
         </li>
         <li>
           <Link to="/profile">Profile</Link>
@@ -35,6 +38,7 @@ const Nav = ({history}) => {
           <Link to="/logout">Logout</Link>
         </li>
       </ul>
+      }
     </nav>
   );
 };
