@@ -4,6 +4,7 @@ import Home from './views/Home';
 import Profile from './views/Profile';
 import Single from './views/Single';
 import Login from './views/Login';
+import Logout from './views/Logout';
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/home" component={Home}/>
         <Route path="/profile" component={Profile}/>
         <Route path="/single" component={Single}/>
+        <Route path="/logout" component={Logout}/>
       </Switch>
     </Router>
   );
