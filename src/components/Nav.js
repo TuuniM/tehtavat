@@ -1,6 +1,20 @@
 import {Link} from 'react-router-dom';
+import {useEffect} from 'react';
+import {useUsers} from '../hooks/ApiHooks';
 
 const Nav = () => {
+  const {getUser} = useUsers();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const token = localStorage.getItem('token');
+      const user = await getUser(token);
+      console.log(user);
+    };
+
+    checkUser();
+  }, []);
+
   return (
     <nav>
       <ul>

@@ -11,6 +11,7 @@ const LoginForm = ({history}) => {
       const userdata = await postLogin(inputs);
       console.log('userdata', userdata);
       localStorage.setItem('token', userdata.token);
+      localStorage.setItem('user', JSON.stringify(userdata.user));
       history.push('/home');
     } catch (e) {
       console.log('doLogin', e.message);

@@ -66,7 +66,22 @@ const useUsers = () => {
     }
   };
 
-  return {register, getUserAvailable};
+  const getUser = async (token) => {
+    const fetchOptions = {
+      method: 'GET',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    try {
+      const response = await doFetch(baseUrl + 'users/user', fetchOptions);
+      return response;
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
+  return {register, getUserAvailable, getUser};
 };
 
 const useLogin = () => {
