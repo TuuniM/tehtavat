@@ -4,15 +4,17 @@ import {Grid, Typography, Button} from '@material-ui/core';
 // import {useState} from 'react';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import {useEffect} from 'react';
+import PropTypes from 'prop-types';
 
-const RegisterForm = () => {
+const RegisterForm = ({setToggle}) => {
   const {register, getUserAvailable} = useUsers();
   const validators = {
     username: ['required', 'minStringLength: 3', 'isAvailable'],
     password: ['required', 'minStringLength:5'],
     confirm: ['required', 'isPasswordMatch'],
     email: ['required', 'isEmail'],
-    full_name: ['matchRegexp:^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$'],
+    // eslint-disable-next-line max-len
+    full_name: ['matchRegexp:^[a-zA-ZåäöÅÄÖ]+(([\',. -][a-zA-ZåäöÅÄÖ ])?[a-zA-ZåäöÅÄÖ]*)*$'],
   };
 
   const errorMessages = {
@@ -20,7 +22,7 @@ const RegisterForm = () => {
     password: ['vaadittu kenttä', 'vähintään 5 merkkiä'],
     confirm: ['vaadittu kenttä', 'salasanat eivät täsmää'],
     email: ['vaadittu kenttä', 'sähköposti väärää muotoa'],
-    full_name: ['vain kirjamia siis hei pliis jooko'],
+    full_name: ['vain kirjaimet sallittuja'],
   };
 
   const doRegister = async () => {
@@ -29,12 +31,25 @@ const RegisterForm = () => {
       const available = await getUserAvailable(inputs.username);
       console.log('availabale', available);
       if (available) {
-        register(inputs);
+        delete inputs.confirm;
+        const result = await register(inputs);
+        if (result.message.length > 0) {
+          alert(result.message);
+          setToggle(true);
+        }
       }
     } catch (e) {
       console.log(e.message);
     }
   };
+
+  const {inputs, handleInputChange, handleSubmit} = useForm(doRegister, {
+    username: '',
+    password: '',
+    confirm: '',
+    email: '',
+    full_name: '',
+  });
 
   useEffect(()=>{
     ValidatorForm.addValidationRule('isAvailable', async (value) => {
@@ -51,16 +66,11 @@ const RegisterForm = () => {
     });
 
     ValidatorForm.addValidationRule('isPasswordMatch',
-      (value) => (value === inputs.password),
+        (value) => (value === inputs.password),
     );
-  }, []);
+  }, [inputs]);
 
-  const {inputs, handleInputChange, handleSubmit} = useForm(doRegister, {
-    username: '',
-    password: '',
-    email: '',
-    full_name: '',
-  });
+
   // console.log('RegisterForm', inputs);
 
   return (
@@ -152,6 +162,10 @@ const RegisterForm = () => {
       </Grid>
     </Grid>
   );
+};
+
+RegisterForm.propTypes = {
+  setToggle: PropTypes.func,
 };
 
 export default RegisterForm;
