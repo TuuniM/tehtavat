@@ -141,9 +141,9 @@ const RegisterForm = () => {
 
             <Grid container item>
               <Button fullWidth
-                      color="primary"
-                      type="submit"
-                      variant="contained">
+                color="primary"
+                type="submit"
+                variant="contained">
                 Register
               </Button>
             </Grid>
