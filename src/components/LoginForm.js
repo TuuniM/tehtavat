@@ -1,5 +1,5 @@
 import {useContext} from 'react';
-import useLoginForm from '../hooks/LoginHooks';
+import useForm from '../hooks/FormHooks';
 import {useLogin} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import {withRouter} from 'react-router-dom';
@@ -22,7 +22,10 @@ const LoginForm = ({history}) => {
     }
   };
 
-  const {inputs, handleInputChange, handleSubmit} = useLoginForm(doLogin);
+  const {inputs, handleInputChange, handleSubmit} = useForm(doLogin, {
+    username: '',
+    password: '',
+  });
 
   console.log('LoginForm', inputs, user);
 
