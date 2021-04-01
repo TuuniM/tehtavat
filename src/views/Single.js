@@ -7,6 +7,7 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
+import BackButton from '../components/BackButton';
 
 const useStyles = makeStyles({
   root: {
@@ -24,6 +25,7 @@ const Single = ({location}) => {
 
   return (
     <>
+      <BackButton />
       <Typography
         component="h1"
         variant="h2"
