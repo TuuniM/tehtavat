@@ -1,23 +1,25 @@
 import useSignUpForm from '../hooks/RegisterHooks';
 import {useUsers} from '../hooks/ApiHooks';
 import {Grid, TextField, Typography, Button} from '@material-ui/core';
-import {useState} from 'react';
+// import {useState} from 'react';
+import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
+import {useEffect} from 'react';
 
 const RegisterForm = () => {
   const {register, getUserAvailable} = useUsers();
-  const [errors, setErrors] = useState({
-    username: false,
+  const validators = {
+    username: ['required', 'minStringLength: 3', 'isAvailable'],
     password: false,
     email: false,
     full_name: false,
-  });
+  };
 
-  const [helperTexts, setHelperTexts] = useState({
-    username: '',
+  const errorMessages = {
+    username: ['vaadittu kenttä', 'vähintään 3 merkkiä', 'tunnus ei oo vapaa'],
     password: 'salasana väärä muotoa',
     email: 'sähköposti väärää muotoa',
     full_name: 'vain kirjamia siis hei pliis jooko',
-  });
+  };
 
   const doRegister = async () => {
     try {
@@ -32,25 +34,20 @@ const RegisterForm = () => {
     }
   };
 
-  const handleUserChange = async (event) => {
-    handleInputChange(event);
-    if (event.target.value.length > 2) {
-      const available = await getUserAvailable(event.target.value);
-      console.log('onk vapaana', available);
-      setErrors((errors)=>{
-        return {
-          ...errors,
-          username: !available,
-        };
-      });
-      setHelperTexts((helperTexts)=>{
-        return {
-          ...helperTexts,
-          username: available ? '' : 'tunnus on jo käytössä',
-        };
-      });
-    }
-  };
+  useEffect(()=>{
+    ValidatorForm.addValidationRule('isAvailable', async (value) => {
+      if (value.length > 2) {
+        try {
+          const available = await getUserAvailable(value);
+          console.log('onk vapaana', available);
+          return available;
+        } catch (e) {
+          console.log(e.message);
+          return true;
+        }
+      }
+    });
+  }, []);
 
   const {inputs, handleInputChange, handleSubmit} = useSignUpForm(doRegister);
   // console.log('RegisterForm', inputs);
@@ -64,18 +61,18 @@ const RegisterForm = () => {
           gutterBottom>Register</Typography>
       </Grid>
       <Grid item xs={12}>
-        <form onSubmit={handleSubmit}>
+        <ValidatorForm onSubmit={handleSubmit}>
           <Grid container>
             <Grid container item>
-              <TextField
+              <TextValidator
                 fullWidth
                 type="text"
                 name="username"
                 label="Username"
-                onChange={handleUserChange}
+                onChange={handleInputChange}
                 value={inputs.username}
-                error={errors.username}
-                helperText={helperTexts.username}
+                validators={validators.username}
+                errorMessages={errorMessages.username}
               />
             </Grid>
 
@@ -121,7 +118,7 @@ const RegisterForm = () => {
               </Button>
             </Grid>
           </Grid>
-        </form>
+        </ValidatorForm>
       </Grid>
     </Grid>
   );
