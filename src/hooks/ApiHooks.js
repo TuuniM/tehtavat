@@ -51,7 +51,7 @@ const useUsers = () => {
     };
     try {
       const response = await doFetch(baseUrl + 'users', fetchOptions);
-      console.log(response);
+      return response;
     } catch (e) {
       alert(e.message);
     }

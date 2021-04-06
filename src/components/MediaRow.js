@@ -15,7 +15,7 @@ const MediaRow = ({file}) => {
   return (
     <>
       <img
-        src={uploadsUrl + file.thumbnails.w320}
+        src={uploadsUrl + file.thumbnails?.w320}
         alt={file.title}
       />
       <GridListTileBar
