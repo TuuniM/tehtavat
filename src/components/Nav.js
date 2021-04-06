@@ -69,7 +69,7 @@ const Nav = ({history}) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            <Link component={RouterLink} to="/home" color="inherit">MyApp</Link>
+            <Link component={RouterLink} to="/" color="inherit">MyApp</Link>
           </Typography>
           {user ?
             <Button
@@ -84,7 +84,7 @@ const Nav = ({history}) => {
               color="inherit"
               startIcon={<ExitToAppIcon/>}
               component={RouterLink}
-              to="/"
+              to="/login"
             >
               Login
             </Button>
@@ -97,7 +97,7 @@ const Nav = ({history}) => {
             button
             component={RouterLink}
             onClick={toggleDrawer(false)}
-            to="/home"
+            to="/"
           >
             <ListItemIcon>
               <HomeIcon/>

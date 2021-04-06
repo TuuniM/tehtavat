@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import {useState, useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {baseUrl} from '../utils/variables';
 
 // general function for fetching (options default value is empty object)
@@ -18,11 +18,24 @@ const doFetch = async (url, options = {}) => {
   }
 };
 
-const useAllMedia = () => {
+// set update to true, if you want to use getMedia automagically
+const useMedia = (update = false) => {
   const [picArray, setPicArray] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(()=>{
-    const loadMedia = async () => {
+  useEffect(() => {
+    if (update) {
+      try {
+        getMedia();
+      } catch (e) {
+        alert(e.message);
+      }
+    }
+  }, []);
+
+  const getMedia = async () => {
+    try {
+      setLoading(true);
       const response = await fetch(baseUrl + 'media');
       const files = await response.json();
       // console.log(files);
@@ -31,13 +44,33 @@ const useAllMedia = () => {
         const resp = await fetch(baseUrl + 'media/' + item.file_id);
         return resp.json();
       }));
-
       setPicArray(media);
-    };
+    } catch (e) {
+      throw new Error(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    loadMedia();
-  }, []);
-  return picArray;
+  const postMedia = async (fd, token) => {
+    setLoading(true);
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        'x-access-token': token,
+      },
+      body: fd,
+    };
+    try {
+      const response = await doFetch(baseUrl + 'media', fetchOptions);
+      return response;
+    } catch (e) {
+      throw new Error('upload failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+  return {getMedia, postMedia, loading, picArray};
 };
 
 const useUsers = () => {
@@ -104,29 +137,5 @@ const useLogin = () => {
   return {postLogin};
 };
 
-const useMedia = () => {
-  const [loading, setLoading] = useState(false);
 
-  const postMedia = async (fd, token) => {
-    setLoading(true);
-    const fetchOptions = {
-      method: 'POST',
-      headers: {
-        'x-access-token': token,
-      },
-      body: fd,
-    };
-    try {
-      const response = await doFetch(baseUrl + 'media', fetchOptions);
-      if (response.message) {
-        setLoading(false);
-      }
-      return response;
-    } catch (e) {
-      alert(e.message);
-    }
-  };
-  return {postMedia, loading};
-};
-
-export {useAllMedia, useUsers, useLogin, useMedia};
+export {useMedia, useUsers, useLogin};

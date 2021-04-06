@@ -27,7 +27,7 @@ const useUploadForm = (callback, initState) => {
     }));
   };
 
-  return {inputs, handleSubmit, handleInputChange, handleFileChange};
+  return {inputs, handleSubmit, handleInputChange, handleFileChange, setInputs};
 };
 
 export default useUploadForm;

@@ -1,6 +1,7 @@
 import MediaRow from './MediaRow';
-import {useAllMedia} from '../hooks/ApiHooks';
+import {useMedia} from '../hooks/ApiHooks';
 import {
+  CircularProgress,
   GridList,
   GridListTile, ListSubheader,
   makeStyles,
@@ -28,7 +29,7 @@ const MediaTable = () => {
   const classes = useStyles();
   const matches = useMediaQuery('(min-width:697px)');
 
-  const picArray = useAllMedia();
+  const {picArray, loading} = useMedia(true);
 
   console.log('MediaTable', picArray);
 
@@ -41,11 +42,14 @@ const MediaTable = () => {
         <GridListTile key="Subheader" cols={3} style={{height: 'auto'}}>
           <ListSubheader component="div">All Media</ListSubheader>
         </GridListTile>
-        {
+        {!loading ?
           picArray.map((item) =>
             <GridListTile key={item.file_id}>
               <MediaRow file={item}/>
-            </GridListTile>)
+            </GridListTile>) :
+          <GridListTile>
+            <CircularProgress />
+          </GridListTile>
         }
       </GridList>
     </div>
