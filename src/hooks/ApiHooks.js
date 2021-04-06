@@ -104,4 +104,23 @@ const useLogin = () => {
   return {postLogin};
 };
 
-export {useAllMedia, useUsers, useLogin};
+const useMedia = () => {
+  const postMedia = async (fd, token) => {
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        'x-access-token': token,
+      },
+      body: fd,
+    };
+    try {
+      const response = await doFetch(baseUrl + 'media', fetchOptions);
+      return response;
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+  return {postMedia};
+};
+
+export {useAllMedia, useUsers, useLogin, useMedia};

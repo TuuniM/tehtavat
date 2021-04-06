@@ -16,6 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import {CloudUpload} from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -115,6 +116,17 @@ const Nav = ({history}) => {
                 <AccountBoxIcon/>
               </ListItemIcon>
               <ListItemText primary="Profile"/>
+            </ListItem>
+            <ListItem
+              button
+              component={RouterLink}
+              onClick={toggleDrawer(false)}
+              to="/upload"
+            >
+              <ListItemIcon>
+                <CloudUpload/>
+              </ListItemIcon>
+              <ListItemText primary="Upload"/>
             </ListItem>
           </>
           }

@@ -5,6 +5,7 @@ import Profile from './views/Profile';
 import Single from './views/Single';
 import Login from './views/Login';
 import Logout from './views/Logout';
+import Upload from './views/Upload';
 import {MediaProvider} from './contexts/MediaContext';
 import {Container} from '@material-ui/core';
 
@@ -21,6 +22,7 @@ const App = () => {
               <Route path="/profile" component={Profile}/>
               <Route path="/single" component={Single}/>
               <Route path="/logout" component={Logout}/>
+              <Route path="/upload" component={Upload}/>
             </Switch>
           </main>
         </Container>
