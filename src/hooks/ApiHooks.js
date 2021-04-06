@@ -105,7 +105,10 @@ const useLogin = () => {
 };
 
 const useMedia = () => {
+  const [loading, setLoading] = useState(false);
+
   const postMedia = async (fd, token) => {
+    setLoading(true);
     const fetchOptions = {
       method: 'POST',
       headers: {
@@ -115,12 +118,15 @@ const useMedia = () => {
     };
     try {
       const response = await doFetch(baseUrl + 'media', fetchOptions);
+      if (response.message) {
+        setLoading(false);
+      }
       return response;
     } catch (e) {
       alert(e.message);
     }
   };
-  return {postMedia};
+  return {postMedia, loading};
 };
 
 export {useAllMedia, useUsers, useLogin, useMedia};
