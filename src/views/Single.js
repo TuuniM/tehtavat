@@ -22,6 +22,8 @@ const Single = ({location}) => {
   const classes = useStyles();
 
   const file = location.state;
+  const desc = JSON.parse(file.description);
+  console.log(desc);
 
   return (
     <>
@@ -40,9 +42,17 @@ const Single = ({location}) => {
               className={classes.media}
               image={uploadsUrl + file.filename}
               title={file.title}
+              style={{
+                filter: `
+                      brightness(${desc.filters.brightness}%)
+                      contrast(${desc.filters.contrast}%)
+                      saturate(${desc.filters.saturate}%)
+                      sepia(${desc.filters.sepia}%)
+                      `,
+              }}
             />
             <CardContent>
-              <Typography gutterBottom>{file.description}</Typography>
+              <Typography gutterBottom>{desc.description}</Typography>
               <Typography variant="subtitle2">{file.user_id}</Typography>
             </CardContent>
           </CardActionArea>
