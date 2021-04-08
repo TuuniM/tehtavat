@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import {useEffect, useState} from 'react';
-import {baseUrl} from '../utils/variables';
+import {appIdentifier, baseUrl} from '../utils/variables';
 
 // general function for fetching (options default value is empty object)
 const doFetch = async (url, options = {}) => {
@@ -23,20 +23,23 @@ const useMedia = (update = false) => {
   const [picArray, setPicArray] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (update) {
+  if (update) {
+    useEffect(() => {
       try {
-        getMedia();
+        (async () => {
+          const media = await getMedia();
+          setPicArray(media);
+        })();
       } catch (e) {
         alert(e.message);
       }
-    }
-  }, []);
+    }, []);
+  }
 
   const getMedia = async () => {
     try {
       setLoading(true);
-      const response = await fetch(baseUrl + 'media');
+      const response = await fetch(baseUrl + 'tags/' + appIdentifier);
       const files = await response.json();
       // console.log(files);
 
@@ -44,7 +47,7 @@ const useMedia = (update = false) => {
         const resp = await fetch(baseUrl + 'media/' + item.file_id);
         return resp.json();
       }));
-      setPicArray(media);
+      return media;
     } catch (e) {
       throw new Error(e.message);
     } finally {
@@ -137,5 +140,30 @@ const useLogin = () => {
   return {postLogin};
 };
 
+const useTag = () => {
+  const postTag = async (token, id, tag = appIdentifier) => {
+    const data = {
+      file_id: id,
+      tag,
+    };
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+    try {
+      const response = await doFetch(baseUrl + 'tags', fetchOptions);
+      return response;
+    } catch (e) {
+      throw new Error('tagging failed');
+    }
+  };
 
-export {useMedia, useUsers, useLogin};
+  return {postTag};
+};
+
+
+export {useMedia, useUsers, useLogin, useTag};
