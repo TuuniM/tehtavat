@@ -10,7 +10,7 @@ import {
 import PropTypes from 'prop-types';
 import {useEffect} from 'react';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
-
+import useSlider from '../hooks/SliderHooks';
 
 const Upload = ({history}) => {
   const {postMedia, loading} = useMedia();
@@ -24,8 +24,8 @@ const Upload = ({history}) => {
       fd.append('file', inputs.file);
       const result = await postMedia(fd, localStorage.getItem('token'));
       const tagResult = await postTag(
-        localStorage.getItem('token'),
-        result.file_id,
+          localStorage.getItem('token'),
+          result.file_id,
       );
       console.log('doUpload', result, tagResult);
       history.push('/');
@@ -41,6 +41,14 @@ const Upload = ({history}) => {
       file: null,
       dataUrl: '',
     });
+
+  const [sliderInputs, handleSliderChange] = useSlider({
+    brightness: 100,
+    contrast: 100,
+    saturate: 100,
+    sepia: 0,
+  });
+
 
   useEffect(() => {
     const reader = new FileReader();
@@ -62,9 +70,9 @@ const Upload = ({history}) => {
         }));
       }
     }
-  }, [inputs]);
+  }, [inputs.file]);
 
-  console.log(inputs);
+  console.log(inputs, sliderInputs);
 
   return (
     <Grid container>
@@ -81,7 +89,7 @@ const Upload = ({history}) => {
         {!loading ?
           <ValidatorForm onSubmit={handleSubmit}>
             <Grid container>
-              <Grid container item>
+              <Grid item xs={12}>
                 <TextValidator
                   fullWidth
                   name="title"
@@ -90,7 +98,7 @@ const Upload = ({history}) => {
                   onChange={handleInputChange}
                 />
               </Grid>
-              <Grid container item>
+              <Grid item xs={12}>
                 <TextValidator
                   fullWidth
                   name="description"
@@ -99,7 +107,7 @@ const Upload = ({history}) => {
                   onChange={handleInputChange}
                 />
               </Grid>
-              <Grid container item>
+              <Grid item xs={12}>
                 <TextValidator
                   fullWidth
                   type="file"
@@ -108,7 +116,7 @@ const Upload = ({history}) => {
                   onChange={handleFileChange}
                 />
               </Grid>
-              <Grid container item>
+              <Grid item xs={12}>
                 <Button
                   type="submit"
                   color="primary"
@@ -118,42 +126,83 @@ const Upload = ({history}) => {
                   Lähetä
                 </Button>
               </Grid>
-              {inputs.dataUrl.length > 0 &&
-              <>
-                <Grid item xs={12}>
-                  <img
-                    src={inputs.dataUrl}
-                    style={{
-                      filter: `
-                      brightness(100%)
-                      contrast(100%)
-                      saturate(100%)
-                      sepia(100%)
+            </Grid>
+            {inputs.dataUrl.length > 0 &&
+            <Grid container
+              direction="column"
+              alignItems="center"
+              justify="center"
+            >
+              <Grid item xs={6}>
+                <img
+                  src={inputs.dataUrl}
+                  style={{
+                    filter: `
+                      brightness(${sliderInputs.brightness}%)
+                      contrast(${sliderInputs.contrast}%)
+                      saturate(${sliderInputs.saturate}%)
+                      sepia(${sliderInputs.sepia}%)
                       `,
-                    }}
+                    width: '100%',
+                  }}
+                />
+              </Grid>
+              <Grid container>
+                <Grid item xs={12}>
+                  <Typography>Brightness</Typography>
+                  <Slider
+                    min={0}
+                    max={200}
+                    step={1}
+                    name="brightness"
+                    value={sliderInputs?.brightness}
+                    valueLabelDisplay="on"
+                    valueLabelFormat={(value) => value + '%'}
+                    onChange={handleSliderChange}
                   />
                 </Grid>
-                <Grid container>
-                  <Grid item>
-                    <Typography>Brightness</Typography>
-                    <Slider />
-                  </Grid>
-                  <Grid item>
-                    <Typography>Contrast</Typography>
-                    <Slider />
-                  </Grid>
-                  <Grid item>
-                    <Typography>Saturation</Typography>
-                    <Slider />
-                  </Grid>
-                  <Grid item>
-                    <Typography>Sepia</Typography>
-                    <Slider />
-                  </Grid>
+                <Grid item xs={12}>
+                  <Typography>Contrast</Typography>
+                  <Slider
+                    min={0}
+                    max={200}
+                    step={1}
+                    name="contrast"
+                    value={sliderInputs?.contrast}
+                    valueLabelDisplay="on"
+                    valueLabelFormat={(value) => value + '%'}
+                    onChange={handleSliderChange}
+                  />
                 </Grid>
-              </>
-              }
+                <Grid item xs={12}>
+                  <Typography>Saturation</Typography>
+                  <Slider
+                    min={0}
+                    max={200}
+                    step={1}
+                    name="saturate"
+                    value={sliderInputs?.saturate}
+                    valueLabelDisplay="on"
+                    valueLabelFormat={(value) => value + '%'}
+                    onChange={handleSliderChange}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography>Sepia</Typography>
+                  <Slider
+                    min={0}
+                    max={100}
+                    step={1}
+                    name="sepia"
+                    value={sliderInputs?.sepia}
+                    valueLabelDisplay="on"
+                    valueLabelFormat={(value) => value + '%'}
+                    onChange={handleSliderChange}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
+            }
           </ValidatorForm> :
           <CircularProgress/>
         }
