@@ -95,7 +95,25 @@ const useMedia = (update = false, ownFiles, userId) => {
       setLoading(false);
     }
   };
-  return {getMedia, postMedia, putMedia, loading, picArray};
+
+  const deleteMedia = async (id, token) => {
+    setLoading(true);
+    const fetchOptions = {
+      method: 'DELETE',
+      headers: {
+        'x-access-token': token,
+      },
+    };
+    try {
+      return await doFetch(baseUrl + 'media/'+id, fetchOptions);
+    } catch (e) {
+      throw new Error('delete failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {getMedia, postMedia, putMedia, deleteMedia, loading, picArray};
 };
 
 const useUsers = () => {
