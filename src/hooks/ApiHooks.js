@@ -76,7 +76,26 @@ const useMedia = (update = false, ownFiles, userId) => {
       setLoading(false);
     }
   };
-  return {getMedia, postMedia, loading, picArray};
+
+  const putMedia = async (data, id, token) => {
+    setLoading(true);
+    const fetchOptions = {
+      method: 'PUT',
+      headers: {
+        'x-access-token': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    };
+    try {
+      return await doFetch(baseUrl + 'media/'+id, fetchOptions);
+    } catch (e) {
+      throw new Error('modify failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+  return {getMedia, postMedia, putMedia, loading, picArray};
 };
 
 const useUsers = () => {
