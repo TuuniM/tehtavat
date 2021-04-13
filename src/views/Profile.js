@@ -12,6 +12,7 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import PersonIcon from '@material-ui/icons/Person';
 import EmailIcon from '@material-ui/icons/Email';
 import BackButton from '../components/BackButton';
+import {Link as RouterLink} from 'react-router-dom';
 
 const Profile = () => {
   const [user] = useContext(MediaContext);
@@ -44,6 +45,12 @@ const Profile = () => {
                 <PersonIcon />
               </ListItemIcon>
               <ListItemText primary={user.full_name} />
+            </ListItem>
+            <ListItem component={RouterLink} to="/myfiles">
+              <ListItemIcon>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary="My files"/>
             </ListItem>
           </List>
         </CardContent>
