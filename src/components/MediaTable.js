@@ -7,6 +7,8 @@ import {
   makeStyles,
   useMediaQuery,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,11 +27,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MediaTable = () => {
+const MediaTable = ({ownFiles}) => {
   const classes = useStyles();
   const matches = useMediaQuery('(min-width:697px)');
 
-  const {picArray, loading} = useMedia(true);
+  const {picArray, loading} = useMedia(true, ownFiles);
 
   console.log('MediaTable', picArray);
 
@@ -54,6 +56,10 @@ const MediaTable = () => {
       </GridList>
     </div>
   );
+};
+
+MediaTable.propTypes = {
+  ownFiles: PropTypes.bool,
 };
 
 export default MediaTable;

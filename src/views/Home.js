@@ -8,7 +8,7 @@ const Home = () => {
         component="h1"
         variant="h2"
         gutterBottom>Home</Typography>
-      <MediaTable/>
+      <MediaTable ownFiles={false}/>
     </>
   );
 };
