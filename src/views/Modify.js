@@ -1,5 +1,5 @@
 import useUploadForm from '../hooks/UploadHooks';
-import {useMedia, useTag} from '../hooks/ApiHooks';
+import {useMedia} from '../hooks/ApiHooks';
 import {
   CircularProgress,
   Button,
@@ -8,14 +8,16 @@ import {
   Slider,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import {useEffect} from 'react';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import useSlider from '../hooks/SliderHooks';
 import BackButton from '../components/BackButton';
+import {uploadsUrl} from '../utils/variables';
 
-const Modify = ({history}) => {
+const Modify = ({history, location}) => {
   const {postMedia, loading} = useMedia();
-  const {postTag} = useTag();
+  const file = location.state;
+
+  const desc = JSON.parse(file.description);
 
   const validators = {
     title: ['required', 'minStringLength: 3'],
@@ -30,64 +32,21 @@ const Modify = ({history}) => {
 
   const doUpload = async () => {
     try {
-      const fd = new FormData();
-      fd.append('title', inputs.title);
-      // kuvaus + filtterit tallennetaan description kenttään
-      const desc = {
-        description: inputs.description,
-        filters: sliderInputs,
-      };
-      fd.append('description', JSON.stringify(desc));
-      fd.append('file', inputs.file);
       const result = await postMedia(fd, localStorage.getItem('token'));
-      const tagResult = await postTag(
-          localStorage.getItem('token'),
-          result.file_id,
-      );
-      console.log('doUpload', result, tagResult);
-      history.push('/');
+      console.log('doUpload', result);
+      history.push('/myfiles');
     } catch (e) {
       alert(e.message);
     }
   };
 
-  const {inputs, handleInputChange, handleSubmit, handleFileChange, setInputs} =
+  const {inputs, handleInputChange, handleSubmit} =
     useUploadForm(doUpload, {
-      title: '',
-      description: '',
-      file: null,
-      dataUrl: '',
+      title: file.title,
+      description: desc.description,
     });
 
-  const [sliderInputs, handleSliderChange] = useSlider({
-    brightness: 100,
-    contrast: 100,
-    saturate: 100,
-    sepia: 0,
-  });
-
-
-  useEffect(() => {
-    const reader = new FileReader();
-
-    reader.addEventListener('load', () => {
-      setInputs((inputs) => ({
-        ...inputs,
-        dataUrl: reader.result,
-      }));
-    });
-
-    if (inputs.file !== null) {
-      if (inputs.file.type.includes('image')) {
-        reader.readAsDataURL(inputs.file);
-      } else {
-        setInputs((inputs) => ({
-          ...inputs,
-          dataUrl: 'logo512.png',
-        }));
-      }
-    }
-  }, [inputs.file]);
+  const [sliderInputs, handleSliderChange] = useSlider(desc.filters);
 
   console.log(inputs, sliderInputs);
 
@@ -101,7 +60,7 @@ const Modify = ({history}) => {
             variant="h2"
             gutterBottom
           >
-            Upload
+            Modify
           </Typography>
         </Grid>
         <Grid item>
@@ -131,15 +90,6 @@ const Modify = ({history}) => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextValidator
-                    fullWidth
-                    type="file"
-                    name="file"
-                    accept="image/*, audio/*, video/*"
-                    onChange={handleFileChange}
-                  />
-                </Grid>
-                <Grid item xs={12}>
                   <Button
                     type="submit"
                     color="primary"
@@ -150,15 +100,15 @@ const Modify = ({history}) => {
                   </Button>
                 </Grid>
               </Grid>
-              {inputs.dataUrl.length > 0 &&
+
               <Grid container
-                direction="column"
-                alignItems="center"
-                justify="center"
+                    direction="column"
+                    alignItems="center"
+                    justify="center"
               >
                 <Grid item xs={6}>
                   <img
-                    src={inputs.dataUrl}
+                    src={uploadsUrl + file.filename}
                     style={{
                       filter: `
                       brightness(${sliderInputs.brightness}%)
@@ -225,7 +175,6 @@ const Modify = ({history}) => {
                   </Grid>
                 </Grid>
               </Grid>
-              }
             </ValidatorForm> :
             <CircularProgress/>
           }
@@ -238,6 +187,7 @@ const Modify = ({history}) => {
 Modify.propTypes =
   {
     history: PropTypes.object,
+    location: PropTypes.object,
   };
 
 
