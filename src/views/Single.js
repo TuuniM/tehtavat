@@ -26,8 +26,13 @@ const Single = ({location}) => {
   const {getUserById} = useUsers();
 
   const file = location.state;
-  const desc = JSON.parse(file.description);
-  console.log(desc);
+  let desc = {}; // jos kuva tallennettu ennen week4C, description ei ole JSONia
+  try {
+    desc = JSON.parse(file.description);
+    console.log(desc);
+  } catch (e) {
+    desc = {description: file.description};
+  }
 
   useEffect(()=>{
     (async () => {
@@ -55,10 +60,10 @@ const Single = ({location}) => {
               title={file.title}
               style={{
                 filter: `
-                      brightness(${desc.filters.brightness}%)
-                      contrast(${desc.filters.contrast}%)
-                      saturate(${desc.filters.saturate}%)
-                      sepia(${desc.filters.sepia}%)
+                      brightness(${desc.filters?.brightness}%)
+                      contrast(${desc.filters?.contrast}%)
+                      saturate(${desc.filters?.saturate}%)
+                      sepia(${desc.filters?.sepia}%)
                       `,
               }}
             />

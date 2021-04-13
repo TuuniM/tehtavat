@@ -39,15 +39,11 @@ const useMedia = (update = false) => {
   const getMedia = async () => {
     try {
       setLoading(true);
-      const response = await fetch(baseUrl + 'tags/' + appIdentifier);
-      const files = await response.json();
+      const files = await doFetch(baseUrl + 'tags/' + appIdentifier);
       // console.log(files);
-
-      const media = await Promise.all(files.map(async (item) => {
-        const resp = await fetch(baseUrl + 'media/' + item.file_id);
-        return resp.json();
+      return await Promise.all(files.map(async (item) => {
+        return await doFetch(baseUrl + 'media/' + item.file_id);
       }));
-      return media;
     } catch (e) {
       throw new Error(e.message);
     } finally {
@@ -65,8 +61,7 @@ const useMedia = (update = false) => {
       body: fd,
     };
     try {
-      const response = await doFetch(baseUrl + 'media', fetchOptions);
-      return response;
+      return await doFetch(baseUrl + 'media', fetchOptions);
     } catch (e) {
       throw new Error('upload failed');
     } finally {
@@ -86,8 +81,7 @@ const useUsers = () => {
       body: JSON.stringify(inputs),
     };
     try {
-      const response = await doFetch(baseUrl + 'users', fetchOptions);
-      return response;
+      return await doFetch(baseUrl + 'users', fetchOptions);
     } catch (e) {
       alert(e.message);
     }
@@ -110,8 +104,7 @@ const useUsers = () => {
       },
     };
     try {
-      const response = await doFetch(baseUrl + 'users/user', fetchOptions);
-      return response;
+      return await doFetch(baseUrl + 'users/user', fetchOptions);
     } catch (e) {
       throw new Error(e.message);
     }
@@ -125,8 +118,7 @@ const useUsers = () => {
       },
     };
     try {
-      const response = await doFetch(baseUrl + 'users/' + id, fetchOptions);
-      return response;
+      return await doFetch(baseUrl + 'users/' + id, fetchOptions);
     } catch (e) {
       throw new Error(e.message);
     }
@@ -145,8 +137,7 @@ const useLogin = () => {
       body: JSON.stringify(inputs),
     };
     try {
-      const response = await doFetch(baseUrl + 'login', fetchOptions);
-      return response;
+      return await doFetch(baseUrl + 'login', fetchOptions);
     } catch (e) {
       alert(e.message);
     }
@@ -170,8 +161,7 @@ const useTag = () => {
       body: JSON.stringify(data),
     };
     try {
-      const response = await doFetch(baseUrl + 'tags', fetchOptions);
-      return response;
+      return await doFetch(baseUrl + 'tags', fetchOptions);
     } catch (e) {
       throw new Error('tagging failed');
     }

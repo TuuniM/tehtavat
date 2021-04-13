@@ -12,15 +12,32 @@ const useStyles = makeStyles((theme) => ({
 
 const MediaRow = ({file}) => {
   const classes = useStyles();
+
+  let desc = {}; // jos kuva tallennettu ennen week4C, description ei ole JSONia
+  try {
+    desc = JSON.parse(file.description);
+    console.log(desc);
+  } catch (e) {
+    desc = {description: file.description};
+  }
+
   return (
     <>
       <img
         src={uploadsUrl + file.thumbnails?.w320}
         alt={file.title}
+        style={{
+          filter: `
+            brightness(${desc.filters?.brightness}%)
+            contrast(${desc.filters?.contrast}%)
+            saturate(${desc.filters?.saturate}%)
+            sepia(${desc.filters?.sepia}%)
+            `,
+        }}
       />
       <GridListTileBar
         title={file.title}
-        subtitle={file.description}
+        subtitle={desc.description}
         actionIcon={
           <>
             <IconButton
@@ -34,7 +51,7 @@ const MediaRow = ({file}) => {
               }
               className={classes.icon}
             >
-              <PageviewIcon fontSize="large" />
+              <PageviewIcon fontSize="large"/>
             </IconButton>
           </>
         }
