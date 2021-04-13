@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MediaRow = ({file}) => {
+const MediaRow = ({file, ownFiles}) => {
   const classes = useStyles();
 
   let desc = {}; // jos kuva tallennettu ennen week4C, description ei ole JSONia
@@ -53,6 +53,28 @@ const MediaRow = ({file}) => {
             >
               <PageviewIcon fontSize="large"/>
             </IconButton>
+            <IconButton
+              aria-label={`modify file`}
+              className={classes.icon}
+              component={RouterLink}
+              to={
+                {
+                  pathname: '/modify',
+                  state: file,
+                }
+              }
+            >
+              <PageviewIcon fontSize="large"/>
+            </IconButton>
+            <IconButton
+              aria-label={`delete file`}
+              className={classes.icon}
+              onClick={()=>{
+                alert('delete');
+              }}
+            >
+              <PageviewIcon fontSize="large"/>
+            </IconButton>
           </>
         }
       />
@@ -62,6 +84,7 @@ const MediaRow = ({file}) => {
 
 MediaRow.propTypes = {
   file: PropTypes.object,
+  ownFiles: PropTypes.bool,
 };
 
 export default MediaRow;

@@ -47,7 +47,7 @@ const MediaTable = ({ownFiles}) => {
         {!loading ?
           picArray.map((item) =>
             <GridListTile key={item.file_id}>
-              <MediaRow file={item}/>
+              <MediaRow file={item} ownFiles={ownFiles}/>
             </GridListTile>) :
           <GridListTile>
             <CircularProgress />

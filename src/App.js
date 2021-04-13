@@ -9,6 +9,7 @@ import Upload from './views/Upload';
 import {MediaProvider} from './contexts/MediaContext';
 import {Container} from '@material-ui/core';
 import MyFiles from './views/MyFiles';
+import Modify from './views/Modify';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
               <Route path="/logout" component={Logout}/>
               <Route path="/upload" component={Upload}/>
               <Route path="/myfiles" component={MyFiles}/>
+              <Route path="/modify" component={Modify}/>
             </Switch>
           </main>
         </Container>
@@ -32,5 +34,7 @@ const App = () => {
     </Router>
   );
 };
+
+export default App;
 
 export default App;
