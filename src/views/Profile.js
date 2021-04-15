@@ -1,4 +1,4 @@
-import {useContext} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {
   Card,
@@ -14,9 +14,29 @@ import EmailIcon from '@material-ui/icons/Email';
 import BackButton from '../components/BackButton';
 import {Link as RouterLink} from 'react-router-dom';
 import ProfileForm from '../components/ProfileForm';
+import {useTag} from '../hooks/ApiHooks';
+import {uploadsUrl} from '../utils/variables';
 
 const Profile = () => {
   const [user] = useContext(MediaContext);
+  const [avatar, setAvatar] = useState('logo512.png');
+  const {getTag} = useTag();
+
+  useEffect(() => {
+    (async ()=>{
+      try {
+        const result = await getTag('avatar_'+user.user_id);
+        if (result.length > 0) {
+          const image = result.pop().filename;
+          setAvatar(uploadsUrl + image);
+        }
+      } catch (e) {
+        console.log(e.message);
+      }
+    })();
+  }, [user]);
+
+  console.log(avatar);
 
   return (
     <>
@@ -28,7 +48,7 @@ const Profile = () => {
       {user &&
       <Card>
         <CardMedia
-          image={'https://placekitten.com/400/300'}
+          image={avatar}
           style={{height: '20vh'}}
         />
         <CardContent>

@@ -232,7 +232,16 @@ const useTag = () => {
     }
   };
 
-  return {postTag};
+  const getTag = async (tag) => {
+    try {
+      const response = await doFetch(baseUrl + 'tags/' + tag);
+      return response;
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
+  return {postTag, getTag};
 };
 
 
