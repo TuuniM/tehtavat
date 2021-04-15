@@ -20,7 +20,7 @@ const doFetch = async (url, options = {}) => {
 };
 
 // set update to true, if you want to use getMedia automagically
-const useMedia = (update = false, ownFiles, userId) => {
+const useMedia = (update = false, ownFiles) => {
   const [picArray, setPicArray] = useState([]);
   const [loading, setLoading] = useState(false);
   const [user] = useContext(MediaContext);
@@ -105,7 +105,11 @@ const useMedia = (update = false, ownFiles, userId) => {
       },
     };
     try {
-      return await doFetch(baseUrl + 'media/'+id, fetchOptions);
+      const resp = await doFetch(baseUrl + 'media/'+id, fetchOptions);
+      if (resp) {
+        const media = await getMedia();
+        setPicArray(media);
+      }
     } catch (e) {
       throw new Error('delete failed');
     } finally {

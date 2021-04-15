@@ -3,7 +3,8 @@ import {uploadsUrl} from '../utils/variables';
 import {Link as RouterLink} from 'react-router-dom';
 import {GridListTileBar, IconButton, makeStyles} from '@material-ui/core';
 import PageviewIcon from '@material-ui/icons/Pageview';
-import {useMedia} from '../hooks/ApiHooks';
+import DeleteIcon from '@material-ui/icons/Delete';
+import CreateIcon from '@material-ui/icons/Create';
 import {withRouter} from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
@@ -12,9 +13,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MediaRow = ({file, ownFiles, history}) => {
+const MediaRow = ({file, ownFiles, history, deleteMedia}) => {
   const classes = useStyles();
-  const {deleteMedia} = useMedia();
 
   let desc = {}; // jos kuva tallennettu ennen week4C, description ei ole JSONia
   try {
@@ -40,7 +40,7 @@ const MediaRow = ({file, ownFiles, history}) => {
       />
       <GridListTileBar
         title={file.title}
-        subtitle={desc.description}
+        subtitle={ownFiles || desc.description}
         actionIcon={
           <>
             <IconButton
@@ -56,36 +56,39 @@ const MediaRow = ({file, ownFiles, history}) => {
             >
               <PageviewIcon fontSize="large"/>
             </IconButton>
-            <IconButton
-              aria-label={`modify file`}
-              className={classes.icon}
-              component={RouterLink}
-              to={
-                {
-                  pathname: '/modify',
-                  state: file,
-                }
-              }
-            >
-              <PageviewIcon fontSize="large"/>
-            </IconButton>
-            <IconButton
-              aria-label={`delete file`}
-              className={classes.icon}
-              onClick={()=>{
-                try {
-                  const conf = confirm('Do you really want to delete?');
-                  if (conf) {
-                    deleteMedia(file.file_id, localStorage.getItem('token'));
+            {ownFiles &&
+            <>
+              <IconButton
+                aria-label={`modify file`}
+                className={classes.icon}
+                component={RouterLink}
+                to={
+                  {
+                    pathname: '/modify',
+                    state: file,
                   }
-                  history.push('/profile');
-                } catch (e) {
-                  console.log(e.message);
                 }
-              }}
-            >
-              <PageviewIcon fontSize="large"/>
-            </IconButton>
+              >
+                <CreateIcon fontSize="large"/>
+              </IconButton>
+              <IconButton
+                aria-label={`delete file`}
+                className={classes.icon}
+                onClick={() => {
+                  try {
+                    const conf = confirm('Do you really want to delete?');
+                    if (conf) {
+                      deleteMedia(file.file_id, localStorage.getItem('token'));
+                    }
+                  } catch (e) {
+                    console.log(e.message);
+                  }
+                }}
+              >
+                <DeleteIcon fontSize="large"/>
+              </IconButton>
+            </>
+            }
           </>
         }
       />
@@ -97,6 +100,7 @@ MediaRow.propTypes = {
   file: PropTypes.object,
   ownFiles: PropTypes.bool,
   history: PropTypes.object,
+  deleteMedia: PropTypes.func,
 };
 
 export default withRouter(MediaRow);
