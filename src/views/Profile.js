@@ -2,7 +2,7 @@ import {useContext} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {
   Card,
-  CardContent,
+  CardContent, Grid,
   List,
   ListItem,
   ListItemIcon, ListItemText,
@@ -13,6 +13,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import EmailIcon from '@material-ui/icons/Email';
 import BackButton from '../components/BackButton';
 import {Link as RouterLink} from 'react-router-dom';
+import ProfileForm from '../components/ProfileForm';
 
 const Profile = () => {
   const [user] = useContext(MediaContext);
@@ -56,6 +57,9 @@ const Profile = () => {
         </CardContent>
       </Card>
       }
+      <Grid>
+        <ProfileForm user={user}/>
+      </Grid>
     </>
   );
 };

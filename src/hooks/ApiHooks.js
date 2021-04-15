@@ -136,6 +136,21 @@ const useUsers = () => {
     }
   };
 
+  const putUser = async (inputs) => {
+    const fetchOptions = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(inputs),
+    };
+    try {
+      return await doFetch(baseUrl + 'users', fetchOptions);
+    } catch (e) {
+      alert(e.message);
+    }
+  };
+
   const getUserAvailable = async (username) => {
     try {
       const response = await doFetch(baseUrl + 'users/username/' + username);
@@ -173,7 +188,7 @@ const useUsers = () => {
     }
   };
 
-  return {register, getUserAvailable, getUser, getUserById};
+  return {register, getUserAvailable, getUser, getUserById, putUser};
 };
 
 const useLogin = () => {
