@@ -2,7 +2,7 @@ import {useContext} from 'react';
 import {MediaContext} from '../contexts/MediaContext';
 import {
   Card,
-  CardContent, Grid,
+  CardContent, CardMedia, Grid,
   List,
   ListItem,
   ListItemIcon, ListItemText,
@@ -27,6 +27,10 @@ const Profile = () => {
         gutterBottom>Profile</Typography>
       {user &&
       <Card>
+        <CardMedia
+          image={'https://placekitten.com/400/300'}
+          style={{height: '20vh'}}
+        />
         <CardContent>
           <List>
             <ListItem>

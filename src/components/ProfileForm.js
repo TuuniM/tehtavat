@@ -1,13 +1,16 @@
-import useForm from '../hooks/FormHooks';
-import {useUsers} from '../hooks/ApiHooks';
+import {useMedia, useTag, useUsers} from '../hooks/ApiHooks';
 import {Grid, Typography, Button} from '@material-ui/core';
 // import {useState} from 'react';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import {useEffect} from 'react';
 import PropTypes from 'prop-types';
+import useUploadForm from '../hooks/UploadHooks';
 
 const ProfileForm = ({user}) => {
   const {putUser} = useUsers();
+  const {postMedia} = useMedia();
+  const {postTag} = useTag();
+
   const validators = {
     confirm: ['isPasswordMatch'],
     email: ['required', 'isEmail'],
@@ -26,7 +29,17 @@ const ProfileForm = ({user}) => {
       console.log('user muokkaus lomake lähtee');
       delete inputs.confirm;
       const result = await putUser(inputs, localStorage.getItem('token'));
-      if (result.message.length > 0) {
+      const fd = new FormData();
+      fd.append('title', inputs.username);
+      fd.append('file', inputs.file);
+      const fileResult = await postMedia(fd, localStorage.getItem('token'));
+      const tagResult = await postTag(
+          localStorage.getItem('token'),
+          fileResult.file_id,
+          'avatar_' + user.user_id,
+      );
+      console.log('doUpload', fileResult, tagResult);
+      if (result && fileResult && tagResult) {
         alert(result.message);
       }
     } catch (e) {
@@ -34,7 +47,8 @@ const ProfileForm = ({user}) => {
     }
   };
 
-  const {inputs, handleInputChange, handleSubmit} = useForm(doRegister, user);
+  const {inputs, handleInputChange, handleSubmit, handleFileChange} =
+    useUploadForm(doRegister, user);
 
   useEffect(() => {
     ValidatorForm.addValidationRule('isPasswordMatch',
@@ -51,7 +65,7 @@ const ProfileForm = ({user}) => {
         <Typography
           component="h1"
           variant="h2"
-          gutterBottom>Register</Typography>
+          gutterBottom>Modify user</Typography>
       </Grid>
       <Grid item xs={12}>
         <ValidatorForm onSubmit={handleSubmit}>
@@ -64,7 +78,6 @@ const ProfileForm = ({user}) => {
                 name="password"
                 label="Password"
                 onChange={handleInputChange}
-                value={inputs.password}
                 validators={validators.password}
                 errorMessages={errorMessages.password}
               />
@@ -77,7 +90,6 @@ const ProfileForm = ({user}) => {
                 name="confirm"
                 label="Confirm password"
                 onChange={handleInputChange}
-                value={inputs.confirm}
                 validators={validators.confirm}
                 errorMessages={errorMessages.confirm}
               />
@@ -90,7 +102,7 @@ const ProfileForm = ({user}) => {
                 name="email"
                 label="Email"
                 onChange={handleInputChange}
-                value={inputs.email}
+                value={inputs?.email}
                 validators={validators.email}
                 errorMessages={errorMessages.email}
               />
@@ -103,9 +115,19 @@ const ProfileForm = ({user}) => {
                 name="full_name"
                 label="Full name"
                 onChange={handleInputChange}
-                value={inputs.full_name}
+                value={inputs?.full_name}
                 validators={validators.full_name}
                 errorMessages={errorMessages.full_name}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextValidator
+                fullWidth
+                type="file"
+                name="file"
+                accept="image/*, audio/*, video/*"
+                onChange={handleFileChange}
               />
             </Grid>
 
