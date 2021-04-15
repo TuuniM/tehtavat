@@ -7,10 +7,8 @@ import {useEffect} from 'react';
 import PropTypes from 'prop-types';
 
 const ProfileForm = ({user}) => {
-  const {putUser, getUserAvailable} = useUsers();
+  const {putUser} = useUsers();
   const validators = {
-    username: ['required', 'minStringLength: 3', 'isAvailable'],
-    password: ['minStringLength:5'],
     confirm: ['isPasswordMatch'],
     email: ['required', 'isEmail'],
     // eslint-disable-next-line max-len
@@ -18,8 +16,6 @@ const ProfileForm = ({user}) => {
   };
 
   const errorMessages = {
-    username: ['vaadittu kenttä', 'vähintään 3 merkkiä', 'tunnus ei oo vapaa'],
-    password: ['vähintään 5 merkkiä'],
     confirm: ['salasanat eivät täsmää'],
     email: ['vaadittu kenttä', 'sähköposti väärää muotoa'],
     full_name: ['vain kirjamia siis hei pliis jooko'],
@@ -27,16 +23,11 @@ const ProfileForm = ({user}) => {
 
   const doRegister = async () => {
     try {
-      console.log('rekisteröinti lomake lähtee');
-      const available = await getUserAvailable(inputs.username);
-      console.log('availabale', available);
-      if (available) {
-        delete inputs.confirm;
-        const result = await putUser(inputs);
-        if (result.message.length > 0) {
-          alert(result.message);
-          setToggle(true);
-        }
+      console.log('user muokkaus lomake lähtee');
+      delete inputs.confirm;
+      const result = await putUser(inputs, localStorage.getItem('token'));
+      if (result.message.length > 0) {
+        alert(result.message);
       }
     } catch (e) {
       console.log(e.message);
@@ -45,20 +36,7 @@ const ProfileForm = ({user}) => {
 
   const {inputs, handleInputChange, handleSubmit} = useForm(doRegister, user);
 
-  useEffect(()=>{
-    ValidatorForm.addValidationRule('isAvailable', async (value) => {
-      if (value.length > 2) {
-        try {
-          const available = await getUserAvailable(value);
-          console.log('onk vapaana', available);
-          return available;
-        } catch (e) {
-          console.log(e.message);
-          return true;
-        }
-      }
-    });
-
+  useEffect(() => {
     ValidatorForm.addValidationRule('isPasswordMatch',
         (value) => (value === inputs.password),
     );
@@ -78,18 +56,6 @@ const ProfileForm = ({user}) => {
       <Grid item xs={12}>
         <ValidatorForm onSubmit={handleSubmit}>
           <Grid container>
-            <Grid container item>
-              <TextValidator
-                fullWidth
-                type="text"
-                name="username"
-                label="Username"
-                onChange={handleInputChange}
-                value={inputs.username}
-                validators={validators.username}
-                errorMessages={errorMessages.username}
-              />
-            </Grid>
 
             <Grid container item>
               <TextValidator
